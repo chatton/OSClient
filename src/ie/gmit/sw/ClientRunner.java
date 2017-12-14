@@ -1,47 +1,48 @@
 package ie.gmit.sw;
 
-import ie.gmit.sw.serialize.Code;
-import ie.gmit.sw.serialize.Message;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class ClientRunner {
     public static void main(String[] args) throws IOException {
 
+        String hostName = "localhost";
+        if (args.length != 0) { // "18.217.200.242"
+            hostName = args[0]; // hostname provided
+        }
+
 //        Scanner sc = new Scanner(new File("bot_data/user1.dat"));
         Scanner sc = new Scanner(System.in);
-        final Client client = new Client("localhost", 9090, sc);
+        final Client client = new Client(hostName, 9090, sc);
         client.connect();
 
         while (true) {
             client.requestMenu(); // prompt for menu every time.
             switch (sc.nextLine()) {
-                case "1":
+                case ActionCodes.REGISTER:
                     client.register();
                     break;
-                case "2":
+                case ActionCodes.LOGIN:
                     client.login();
                     break;
-                case "3":
+                case ActionCodes.ADD_FITNESS_RECORD:
                     client.addFitnessRecord();
                     break;
-                case "4":
+                case ActionCodes.ADD_MEAL_RECORD:
                     client.addMealRecord();
                     break;
-                case "5":
+                case ActionCodes.REQUEST_MEAL_RECORDS:
                     client.requestMealRecords();
                     break;
-                case "6":
+                case ActionCodes.REQUEST_FITNESS_RECORDS:
                     client.requestFitnessRecords();
                     break;
-                case "7":
+                case ActionCodes.DELETE_RECORD:
                     client.deleteRecord();
                     break;
-                case "8":
+                case ActionCodes.EXIT:
                     client.exit();
-                    return;
+                    return; // exits client application.
             }
         }
 

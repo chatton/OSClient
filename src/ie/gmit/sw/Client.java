@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+class Client {
 
     private final Scanner scanner;
     private final String address;
@@ -19,24 +19,24 @@ public class Client {
     private ObjectOutputStream objOut;
     private ObjectInputStream objIn;
 
-    public Client(String address, int port, final Scanner scanner) {
+    Client(String address, int port, final Scanner scanner) {
         this.address = address;
         this.port = port;
         this.scanner = scanner;
     }
 
-    public void connect() throws IOException {
+    void connect() throws IOException {
         socket = new Socket(address, port);
         objOut = new ObjectOutputStream(socket.getOutputStream());
         objOut.flush();
         objIn = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void sendCode(Code code) {
-        sendMessage(new Message(null, code));
+    private void sendCode(Code code) {
+        sendMessage(new Message("", code));
     }
 
-    public boolean login() {
+    boolean login() {
         sendCode(Code.LOGIN); // prompt server to start login process.
 
         final Message userNameMessage = readMessage();
@@ -55,7 +55,7 @@ public class Client {
         return "server> " + msg.message();
     }
 
-    public boolean addMealRecord() {
+    boolean addMealRecord() {
         sendCode(Code.ADD_MEAL);
         Message msg = readMessage();
         System.out.println(serverMessage(msg)); // " enter mode "
@@ -73,13 +73,13 @@ public class Client {
 
     }
 
-    public boolean requestFitnessRecords() {
+    boolean requestFitnessRecords() {
         sendCode(Code.REQUEST_FITNESS);
         System.out.println(readMessage().message());
         return true;
     }
 
-    public boolean addFitnessRecord() {
+    boolean addFitnessRecord() {
         sendCode(Code.ADD_FITNESS);
 
         Message msg = readMessage();
@@ -97,7 +97,7 @@ public class Client {
         return readMessage().ok();
     }
 
-    public boolean register() {
+    boolean register() {
         sendCode(Code.REGISTER); // start registration process.
 
         Message message = readMessage();
@@ -117,6 +117,17 @@ public class Client {
 
         message = readMessage();
         System.out.println(serverMessage(message)); // "password accepted"
+
+        if (!message.ok()) {
+            return false;
+        }
+
+        message = readMessage();
+        System.out.println(serverMessage(message)); // "Enter address"
+        sendText(scanner.nextLine());
+
+        message = readMessage();
+        System.out.println(serverMessage(message)); // "address okay"
 
         if (!message.ok()) {
             return false;
@@ -162,7 +173,7 @@ public class Client {
 
     }
 
-    public void exit() {
+    void exit() {
         sendCode(Code.EXIT);
     }
 
@@ -188,8 +199,7 @@ public class Client {
         sendMessage(new Message(text, Code.MESSAGE));
     }
 
-
-    public void deleteRecord() {
+    void deleteRecord() {
         sendCode(Code.DELETE);
         Message msg = readMessage();
         System.out.println(serverMessage(msg));
@@ -201,14 +211,14 @@ public class Client {
         System.out.println(serverMessage(msg));
     }
 
-    public boolean requestMenu() {
+    boolean requestMenu() {
         sendCode(Code.MENU);
         Message menu = readMessage();
         System.out.println(menu.message());
         return menu.ok();
     }
 
-    public void requestMealRecords() {
+    void requestMealRecords() {
         sendCode(Code.REQUEST_MEAL);
         Message msg = readMessage();
         System.out.println(msg.message()); //  error or actual records.
