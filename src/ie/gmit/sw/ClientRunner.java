@@ -12,7 +12,7 @@ public class ClientRunner {
         }
 
 //        Scanner sc = new Scanner(new File("bot_data/user1.dat"));
-        Scanner sc = new Scanner(System.in);
+        final Scanner sc = new Scanner(System.in);
         final Client client = new Client(hostName, 9090, sc);
         client.connect();
 

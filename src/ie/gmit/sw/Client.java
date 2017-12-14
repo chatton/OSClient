@@ -40,25 +40,25 @@ class Client {
         sendCode(Code.LOGIN); // prompt server to start login process.
 
         final Message userNameMessage = readMessage();
-        System.out.println(serverMessage(userNameMessage)); // enter user name.
+        serverMessage(userNameMessage); // enter user name.
         sendText(scanner.nextLine()); // send user name.
 
         final Message passwordMessage = readMessage();
-        System.out.println(serverMessage(passwordMessage)); // enter password.
+        serverMessage(passwordMessage); // enter password.
         sendText(scanner.nextLine()); // send password
         Message status = readMessage();
         System.out.println(status.message());
         return status.ok();
     }
 
-    private String serverMessage(Message msg) {
-        return "server> " + msg.message();
+    private void serverMessage(Message msg) {
+        System.out.println("server> " + msg.message());
     }
 
     boolean addMealRecord() {
         sendCode(Code.ADD_MEAL);
         Message msg = readMessage();
-        System.out.println(serverMessage(msg)); // " enter mode "
+        serverMessage(msg); // " enter mode "
         if (msg.code() == Code.FORBIDDEN) {
             return false; // can't add a record if not logged in.
         }
@@ -66,7 +66,7 @@ class Client {
         sendText(scanner.nextLine()); // send meal description
 
         msg = readMessage();
-        System.out.println(serverMessage(msg)); // "enter duration"
+        serverMessage(msg); // "enter duration"
         sendText(scanner.nextLine()); // send duration
 
         return readMessage().ok();
@@ -83,7 +83,7 @@ class Client {
         sendCode(Code.ADD_FITNESS);
 
         Message msg = readMessage();
-        System.out.println(serverMessage(msg)); // " enter mode "
+        serverMessage(msg); // " enter mode "
         if (msg.code() == Code.FORBIDDEN) {
             return false; // can't add a record if not logged in.
         }
@@ -91,7 +91,7 @@ class Client {
         sendText(scanner.nextLine()); // send mode
 
         msg = readMessage();
-        System.out.println(serverMessage(msg)); // "enter duration"
+        serverMessage(msg); // "enter duration"
         sendText(scanner.nextLine()); // send duration
 
         return readMessage().ok();
@@ -101,74 +101,74 @@ class Client {
         sendCode(Code.REGISTER); // start registration process.
 
         Message message = readMessage();
-        System.out.println(serverMessage(message)); // "enter user name"
+        serverMessage(message); // "enter user name"
         sendText(scanner.nextLine()); // send user name
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "user name accepted"
+        serverMessage(message); // "user name accepted"
 
         if (!message.ok()) {
             return false; // registration failed.
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "enter password"
+        serverMessage(message); // "enter password"
         sendText(scanner.nextLine()); // send password to server
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "password accepted"
+        serverMessage(message); // "password accepted"
 
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "Enter address"
+        serverMessage(message); // "Enter address"
         sendText(scanner.nextLine());
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "address okay"
+        serverMessage(message); // "address okay"
 
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "Enter ppsn"
+        serverMessage(message); // "Enter ppsn"
         sendText(scanner.nextLine()); // send ppsn
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "valid ppsn"
+        serverMessage(message); // "valid ppsn"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "enter height"
+        serverMessage(message); // "enter height"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "height okay"
+        serverMessage(message); // "height okay"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "enter weight"
+        serverMessage(message); // "enter weight"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "weight okay"
+        serverMessage(message); // "weight okay"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "enter age"
+        serverMessage(message); // "enter age"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        System.out.println(serverMessage(message)); // "age okay"
+        serverMessage(message); // "age okay"
         return message.ok() && readMessage().ok(); // second message is the final notification for if it was successfully added to db
 
     }
@@ -202,13 +202,13 @@ class Client {
     void deleteRecord() {
         sendCode(Code.DELETE);
         Message msg = readMessage();
-        System.out.println(serverMessage(msg));
+        serverMessage(msg);
         if (msg.code() == Code.FORBIDDEN) {
             return;
         }
         sendText(scanner.nextLine());
         msg = readMessage();
-        System.out.println(serverMessage(msg));
+        serverMessage(msg);
     }
 
     boolean requestMenu() {
