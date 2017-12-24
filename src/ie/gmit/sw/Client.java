@@ -3,6 +3,7 @@ package ie.gmit.sw;
 import ie.gmit.sw.serialize.Code;
 import ie.gmit.sw.serialize.Message;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,6 +37,15 @@ class Client {
         sendMessage(new Message("", code));
     }
 
+    private String readPassword() {
+        final Console console = System.console();
+        if (console != null) { // console will be null if not being read from actual console. EG in IDE
+            char[] passChars = System.console().readPassword(); // disables echoing
+            return new String(passChars);
+        }
+        return scanner.nextLine(); // just use the scanner instead if not executing in console.
+    }
+
     boolean login() {
         sendCode(Code.LOGIN); // prompt server to start login process.
 
@@ -45,7 +55,9 @@ class Client {
 
         final Message passwordMessage = readMessage();
         serverMessage(passwordMessage); // enter password.
-        sendText(scanner.nextLine()); // send password
+        final String hiddenPassword = readPassword();
+        System.out.println(hiddenPassword);
+        sendText(hiddenPassword); // send password
         Message status = readMessage();
         System.out.println(status.message());
         return status.ok();
