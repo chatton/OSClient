@@ -11,7 +11,6 @@ public class ClientRunner {
             hostName = args[0]; // hostname provided
         }
 
-//        Scanner sc = new Scanner(new File("bot_data/user1.dat"));
         final Scanner sc = new Scanner(System.in);
         final Client client = new Client(hostName, 9090, sc);
         client.connect();
@@ -45,6 +44,6 @@ public class ClientRunner {
                     return; // exits client application.
             }
         }
-
+//
     }
 }

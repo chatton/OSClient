@@ -16,18 +16,17 @@ class Client {
     private final Scanner scanner;
     private final String address;
     private final int port;
-    private Socket socket;
     private ObjectOutputStream objOut;
     private ObjectInputStream objIn;
 
-    Client(String address, int port, final Scanner scanner) {
+    Client(final String address, final int port, final Scanner scanner) {
         this.address = address;
         this.port = port;
         this.scanner = scanner;
     }
 
     void connect() throws IOException {
-        socket = new Socket(address, port);
+        final Socket socket = new Socket(address, port);
         objOut = new ObjectOutputStream(socket.getOutputStream());
         objOut.flush();
         objIn = new ObjectInputStream(socket.getInputStream());
@@ -39,8 +38,8 @@ class Client {
 
     private String readPassword() {
         final Console console = System.console();
-        if (console != null) { // console will be null if not being read from actual console. EG in IDE
-            char[] passChars = System.console().readPassword(); // disables echoing
+        if (console != null) { // console will be null if not being read from actual console. EG in IDE or virtual console
+            final char[] passChars = System.console().readPassword(); // disables echoing
             return new String(passChars);
         }
         return scanner.nextLine(); // just use the scanner instead if not executing in console.
@@ -55,11 +54,11 @@ class Client {
 
         final Message passwordMessage = readMessage();
         serverMessage(passwordMessage); // enter password.
-        final String hiddenPassword = readPassword();
-        System.out.println(hiddenPassword);
-        sendText(hiddenPassword); // send password
-        Message status = readMessage();
-        System.out.println(status.message());
+
+        sendText(readPassword()); // send password
+
+        final Message status = readMessage();
+        serverMessage(status);
         return status.ok();
     }
 
@@ -125,7 +124,8 @@ class Client {
 
         message = readMessage();
         serverMessage(message); // "enter password"
-        sendText(scanner.nextLine()); // send password to server
+
+        sendText(readPassword()); // send password to server
 
         message = readMessage();
         serverMessage(message); // "password accepted"
@@ -225,14 +225,14 @@ class Client {
 
     boolean requestMenu() {
         sendCode(Code.MENU);
-        Message menu = readMessage();
+        final Message menu = readMessage();
         System.out.println(menu.message());
         return menu.ok();
     }
 
     void requestMealRecords() {
         sendCode(Code.REQUEST_MEAL);
-        Message msg = readMessage();
+        final Message msg = readMessage();
         System.out.println(msg.message()); //  error or actual records.
     }
 }
