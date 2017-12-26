@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class FakeClientsRunner {
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) throws IOException {
         String hostName = "localhost";
         if (args.length != 0) { // "18.217.200.242"
             hostName = args[0]; // hostname provided
@@ -49,7 +49,6 @@ public class FakeClientsRunner {
                             go = false;
                     }
                 }
-
             }
         }
     }

@@ -194,7 +194,7 @@ class Client {
             objOut.writeObject(message);
             objOut.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error sending message: " + e.getMessage());
         }
     }
 
@@ -202,7 +202,7 @@ class Client {
         try {
             return (Message) objIn.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Error reading message: " + e.getMessage());
             return new Message("Couldn't read from server", Code.BAD);
         }
     }
