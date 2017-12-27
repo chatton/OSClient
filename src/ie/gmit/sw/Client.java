@@ -49,27 +49,27 @@ class Client {
         sendCode(Code.LOGIN); // prompt server to start login process.
 
         final Message userNameMessage = readMessage();
-        serverMessage(userNameMessage); // enter user name.
+        printServerMessage(userNameMessage); // enter user name.
         sendText(scanner.nextLine()); // send user name.
 
         final Message passwordMessage = readMessage();
-        serverMessage(passwordMessage); // enter password.
+        printServerMessage(passwordMessage); // enter password.
 
         sendText(readPassword()); // send password
 
         final Message status = readMessage();
-        serverMessage(status);
+        printServerMessage(status);
         return status.ok();
     }
 
-    private void serverMessage(Message msg) {
+    private void printServerMessage(Message msg) {
         System.out.println("server> " + msg.message());
     }
 
     boolean addMealRecord() {
         sendCode(Code.ADD_MEAL);
         Message msg = readMessage();
-        serverMessage(msg); // " enter mode "
+        printServerMessage(msg); // " enter mode "
         if (msg.code() == Code.FORBIDDEN) {
             return false; // can't add a record if not logged in.
         }
@@ -77,10 +77,12 @@ class Client {
         sendText(scanner.nextLine()); // send meal description
 
         msg = readMessage();
-        serverMessage(msg); // "enter duration"
+        printServerMessage(msg); // "enter duration"
         sendText(scanner.nextLine()); // send duration
 
-        return readMessage().ok();
+        final Message reply = readMessage();
+        printServerMessage(reply);
+        return reply.ok();
 
     }
 
@@ -94,7 +96,7 @@ class Client {
         sendCode(Code.ADD_FITNESS);
 
         Message msg = readMessage();
-        serverMessage(msg); // " enter mode "
+        printServerMessage(msg); // " enter mode " or forbidden message
         if (msg.code() == Code.FORBIDDEN) {
             return false; // can't add a record if not logged in.
         }
@@ -102,85 +104,86 @@ class Client {
         sendText(scanner.nextLine()); // send mode
 
         msg = readMessage();
-        serverMessage(msg); // "enter duration"
+        printServerMessage(msg); // "enter duration"
         sendText(scanner.nextLine()); // send duration
-
-        return readMessage().ok();
+        final Message reply = readMessage();
+        printServerMessage(reply);
+        return reply.ok();
     }
 
     boolean register() {
         sendCode(Code.REGISTER); // start registration process.
 
         Message message = readMessage();
-        serverMessage(message); // "enter user name"
+        printServerMessage(message); // "enter user name"
         sendText(scanner.nextLine()); // send user name
 
         message = readMessage();
-        serverMessage(message); // "user name accepted"
+        printServerMessage(message); // "user name accepted"
 
         if (!message.ok()) {
             return false; // registration failed.
         }
 
         message = readMessage();
-        serverMessage(message); // "enter password"
+        printServerMessage(message); // "enter password"
 
         sendText(readPassword()); // send password to server
 
         message = readMessage();
-        serverMessage(message); // "password accepted"
+        printServerMessage(message); // "password accepted"
 
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        serverMessage(message); // "Enter address"
+        printServerMessage(message); // "Enter address"
         sendText(scanner.nextLine());
 
         message = readMessage();
-        serverMessage(message); // "address okay"
+        printServerMessage(message); // "address okay"
 
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        serverMessage(message); // "Enter ppsn"
+        printServerMessage(message); // "Enter ppsn"
         sendText(scanner.nextLine()); // send ppsn
 
         message = readMessage();
-        serverMessage(message); // "valid ppsn"
+        printServerMessage(message); // "valid ppsn"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        serverMessage(message); // "enter height"
+        printServerMessage(message); // "enter height"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        serverMessage(message); // "height okay"
+        printServerMessage(message); // "height okay"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        serverMessage(message); // "enter weight"
+        printServerMessage(message); // "enter weight"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        serverMessage(message); // "weight okay"
+        printServerMessage(message); // "weight okay"
         if (!message.ok()) {
             return false;
         }
 
         message = readMessage();
-        serverMessage(message); // "enter age"
+        printServerMessage(message); // "enter age"
         sendText(scanner.nextLine()); // send height
 
         message = readMessage();
-        serverMessage(message); // "age okay"
+        printServerMessage(message); // "age okay"
         return message.ok() && readMessage().ok(); // second message is the final notification for if it was successfully added to db
 
     }
@@ -189,12 +192,12 @@ class Client {
         sendCode(Code.EXIT);
     }
 
-    private void sendMessage(Message message) {
+    private void sendMessage(final Message message) {
         try {
             objOut.writeObject(message);
             objOut.flush();
         } catch (IOException e) {
-            System.out.println("Error sending message: " + e.getMessage());
+            System.out.println("Error sending message. Error: " + e.getMessage());
         }
     }
 
@@ -214,20 +217,20 @@ class Client {
     void deleteRecord() {
         sendCode(Code.DELETE);
         Message msg = readMessage();
-        serverMessage(msg);
+        printServerMessage(msg);
         if (msg.code() == Code.FORBIDDEN) {
             return;
         }
         sendText(scanner.nextLine());
         msg = readMessage();
-        serverMessage(msg);
+        printServerMessage(msg);
     }
 
     boolean requestMenu() {
         sendCode(Code.MENU);
-        final Message menu = readMessage();
-        System.out.println(menu.message());
-        return menu.ok();
+        final Message menuMsg = readMessage();
+        System.out.println(menuMsg.message()); // don't display "server>" when printing menu.
+        return menuMsg.ok();
     }
 
     void requestMealRecords() {
