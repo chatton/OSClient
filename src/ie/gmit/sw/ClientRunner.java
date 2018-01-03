@@ -12,7 +12,14 @@ public class ClientRunner {
         }
 
         final Scanner sc = new Scanner(System.in);
-        final Client client = new Client(hostName, 9090, sc);
+        Client client; 
+        try{
+            client = new Client(hostName, 9090, sc);
+        } catch(Exception e){
+            System.out.println("Unexpected error: " + e.getMessage());
+            System.exit(0);
+        }
+        
         client.connect();
 
         while (true) {
