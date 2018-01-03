@@ -12,7 +12,7 @@ public class ClientRunner {
         }
 
         final Scanner sc = new Scanner(System.in);
-        Client client; 
+        Client client = null; 
         try{
             client = new Client(hostName, 9090, sc);
         } catch(Exception e){
